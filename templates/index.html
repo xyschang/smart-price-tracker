@@ -51,12 +51,16 @@
 </div>
 {% endfor %}
 
+<h3>📊 價格走勢圖</h3>
+<div class="card">
+    <canvas id="priceChart"></canvas>
+</div>
 <!-- 歷史 -->
 <h3>📈 歷史紀錄</h3>
 
 {% for h in history %}
 <div class="card">
-    {{ h[1] }} - {{ h[2] }} - {{ h[3] }}
+    {{ h[0] }} - NT$ {{ h[1] }} - {{ h[2] }}
 </div>
 {% endfor %}
 
@@ -80,14 +84,38 @@ function delItem(name) {
     }).then(() => location.reload())
 }
 </script>
+
+// 預設載入第一個商品
+loadChart("PChome 商品");
+</script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
+function add() {
+    fetch("/add", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            name: document.getElementById("name").value,
+            url: document.getElementById("url").value
+        })
+    }).then(() => location.reload())
+}
+
+function delItem(name) {
+    fetch("/delete", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ name })
+    }).then(() => location.reload())
+}
+
 async function loadChart(productName) {
-    const res = await fetch(`/api/history/${productName}`);
+    const res = await fetch(`/api/history/${encodeURIComponent(productName)}`);
     const data = await res.json();
 
-    const labels = data.map(d => d[3]);
-    const prices = data.map(d => d[2]);
+    const labels = data.map(d => d.time);
+    const prices = data.map(d => d.price);
 
     new Chart(document.getElementById("priceChart"), {
         type: "line",
@@ -102,9 +130,9 @@ async function loadChart(productName) {
     });
 }
 
-// 預設載入第一個商品
-loadChart("PChome 商品");
+{% if products %}
+loadChart("{{ products[0].name }}");
+{% endif %}
 </script>
-
 </body>
 </html>

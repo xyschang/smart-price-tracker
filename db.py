@@ -51,3 +51,19 @@ def get_all():
     conn.close()
 
     return data
+
+def get_history_by_name(name):
+    conn = sqlite3.connect(DB_PATH)
+
+    cursor = conn.execute("""
+        SELECT name, price, time
+        FROM prices
+        WHERE name = ?
+        ORDER BY id ASC
+        LIMIT 30
+    """, (name,))
+
+    data = cursor.fetchall()
+    conn.close()
+
+    return data

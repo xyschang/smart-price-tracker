@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request, jsonify
 from scraper import get_price
-from db import init_db, save, get_all
+from db import init_db, save, get_all, get_history_by_name
 import json
 import os
+print("正在執行的 app.py：", __file__)
 
 app = Flask(__name__)
 
@@ -84,13 +85,27 @@ def delete():
 
     return jsonify({"status": "deleted"})
 
+# =====================
+# 價格歷史 API
+# =====================
+@app.route("/test")
+def test():
+    return "test route OK"
+@app.route("/api/history/<path:name>")
+def api_history(name):
+    history = get_history_by_name(name)
+
+    result = []
+
+    for h in history:
+        result.append({
+            "name": h[0],
+            "price": h[1],
+            "time": h[2]
+        })
+
+    return jsonify(result)
+
 
 if __name__ == "__main__":
-    app.run(debug=True)
-
-
-@app.route("/api/history/<name>")
-def history(name):
-    data = get_all()
-    result = [d for d in data if d[1] == name]
-    return jsonify(result)
+    app.run(debug=True, use_reloader=False)
