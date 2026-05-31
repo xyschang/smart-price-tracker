@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Smart Price Tracker V2</title>
+
+    <style>
+        body { font-family: Arial; padding: 20px; background:#f4f4f4; }
+
+        .card {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        button {
+            padding: 5px 10px;
+            margin-left: 10px;
+        }
+
+        input {
+            padding: 5px;
+            margin: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>📊 Smart Price Tracker V2</h1>
+
+<!-- 新增商品 -->
+<div class="card">
+    <h3>➕ 新增商品</h3>
+    <input id="name" placeholder="商品名稱">
+    <input id="url" placeholder="商品網址">
+    <button onclick="add()">新增</button>
+</div>
+
+<!-- 即時價格 -->
+<h3>💰 即時價格</h3>
+
+{% for p in products %}
+<div class="card">
+    <b>{{ p.name }}</b><br>
+    NT$ {{ p.price }}
+
+    <button onclick="delItem('{{ p.name }}')">刪除</button>
+</div>
+{% endfor %}
+
+<!-- 歷史 -->
+<h3>📈 歷史紀錄</h3>
+
+{% for h in history %}
+<div class="card">
+    {{ h[1] }} - {{ h[2] }} - {{ h[3] }}
+</div>
+{% endfor %}
+
+<script>
+function add() {
+    fetch("/add", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            name: name.value,
+            url: url.value
+        })
+    }).then(() => location.reload())
+}
+
+function delItem(name) {
+    fetch("/delete", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ name })
+    }).then(() => location.reload())
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+async function loadChart(productName) {
+    const res = await fetch(`/api/history/${productName}`);
+    const data = await res.json();
+
+    const labels = data.map(d => d[3]);
+    const prices = data.map(d => d[2]);
+
+    new Chart(document.getElementById("priceChart"), {
+        type: "line",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: productName,
+                data: prices,
+                borderWidth: 2
+            }]
+        }
+    });
+}
+
+// 預設載入第一個商品
+loadChart("PChome 商品");
+</script>
+
+</body>
+</html>

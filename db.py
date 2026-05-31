@@ -1,0 +1,53 @@
+import sqlite3
+import os
+
+DB_PATH = "data/prices.db"
+
+
+def init_db():
+    os.makedirs("data", exist_ok=True)
+
+    conn = sqlite3.connect(DB_PATH)
+
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS prices(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            price INTEGER,
+            time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+
+    conn.commit()
+    conn.close()
+
+
+def save(name, price):
+
+    conn = sqlite3.connect(DB_PATH)
+
+    conn.execute(
+        "INSERT INTO prices(name,price) VALUES(?,?)",
+        (name, price)
+    )
+
+    conn.commit()
+    conn.close()
+
+
+def get_all():
+
+    conn = sqlite3.connect(DB_PATH)
+
+    cursor = conn.execute("""
+        SELECT name, price, time
+        FROM prices
+        ORDER BY id DESC
+        LIMIT 20
+    """)
+
+    data = cursor.fetchall()
+
+    conn.close()
+
+    return data
