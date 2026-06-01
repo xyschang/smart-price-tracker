@@ -39,7 +39,7 @@ def index():
     for p in products:
         print(p)
         price = get_price(p["url"])
-        target = int(p.get("target", 0))
+        target = int(p.get("target")or 0)
 
         if price:
             save(p["name"], price)
@@ -83,7 +83,7 @@ def add():
     products.append({
         "name": data["name"],
         "url": data["url"],
-        "target": data.get("target", ""),
+        "target": data.get("target")or "0",
         "notified": False
     })
 
