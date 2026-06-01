@@ -53,11 +53,11 @@ def index():
                 目前價格：{price}
                 目標價格：{target}
                 """
-        )
+                )
 
-        p["notified"] = True
-        save_products(products)
-        print("已寫入 products.json")
+                p["notified"] = True
+                save_products(products)
+                print("已寫入 products.json")
 
         results.append({
             "name": p["name"],
