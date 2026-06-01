@@ -131,19 +131,31 @@
         <b>{{ p.name }}</b><br>
 
         目前價格：
-        NT$ {{ p.price }}
+        {% if p.price %}
+            NT$ {{ p.price }}
+        {% else %}
+            無法取得價格
+        {% endif %}
 
         <br>
 
         目標價格：
-        NT$ {{ p.target }}
+        {% if p.target %}
+            NT$ {{ p.target }}
+        {% else %}
+            未設定
+        {% endif %}
 
         <br>
 
-        {% if p.target and p.price <= p.target|int %}
+        {% if p.price is not none and p.target and p.price <= p.target|int %}
             <span class="badge bg-success">
                 ✅ 已達標
-             </span>
+            </span>
+        {% elif p.price is none %}
+            <span class="badge bg-secondary">
+                無法取得價格
+            </span>
         {% else %}
             <span class="badge bg-danger">
                 ❌ 未達標
