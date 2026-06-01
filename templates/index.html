@@ -90,24 +90,33 @@
 
             <h4 class="mb-3">➕ 新增商品</h4>
 
-            <div class="row">
-                <div class="col-md-5 mb-2">
-                    <input id="name" placeholder="商品名稱">
-                </div>
+            <div class="col-md-4 mb-2">
+                <input
+                     id="name"
+                    class="form-control"
+                    placeholder="商品名稱">
+            </div>
 
-                <div class="col-md-5 mb-2">
-                    <input id="url" placeholder="商品網址">
-                </div>
+            <div class="col-md-5 mb-2">
+                <input
+                    id="url"
+                    class="form-control"
+                    placeholder="商品網址">
+            </div>
 
-                <div class="col-md-5 mb-2">
-                    <input id="target"placeholder="目標價格">
-                </div>
+            <div class="col-md-2 mb-2">
+                <input
+                 id="target"
+                class="form-control"
+                placeholder="目標價格">
+            </div>
 
-                <div class="col-md-2 mb-2">
-                    <button onclick="add()">
-                        新增商品
-                    </button>
-                </div>
+            <div class="col-md-1 mb-2">
+                <button
+                    class="btn btn-primary w-100"
+                    onclick="add()">
+                    新增
+                </button>
             </div>
 
         </div>
@@ -129,6 +138,19 @@
         目標價格：
         NT$ {{ p.target }}
 
+        <br>
+
+        {% if p.target and p.price <= p.target|int %}
+            <span class="badge bg-success">
+                ✅ 已達標
+             </span>
+        {% else %}
+            <span class="badge bg-danger">
+                ❌ 未達標
+            </span>
+        {% endif %}
+
+        
         <br><br>
 
         <button onclick="delItem('{{ p.name }}')">
