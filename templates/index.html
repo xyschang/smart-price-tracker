@@ -92,24 +92,20 @@
 
             <div class="row">
                 <div class="col-md-5 mb-2">
-                    <input
-                        id="name"
-                        class="form-control"
-                        placeholder="商品名稱">
+                    <input id="name" placeholder="商品名稱">
                 </div>
 
                 <div class="col-md-5 mb-2">
-                    <input
-                        id="url"
-                        class="form-control"
-                        placeholder="商品網址">
+                    <input id="url" placeholder="商品網址">
+                </div>
+
+                <div class="col-md-5 mb-2">
+                    <input id="target"placeholder="目標價格">
                 </div>
 
                 <div class="col-md-2 mb-2">
-                    <button
-                        class="btn btn-primary w-100"
-                        onclick="add()">
-                        新增
+                    <button onclick="add()">
+                        新增商品
                     </button>
                 </div>
             </div>
@@ -121,28 +117,26 @@
     <h4 class="mb-3">💰 即時價格</h4>
 
     {% for p in products %}
-    <div class="card shadow-sm mb-3 product-card">
-        <div class="card-body d-flex justify-content-between align-items-center">
+    <div class="card">
 
-            <div>
-                <h5 class="mb-1">{{ p.name }}</h5>
+        <b>{{ p.name }}</b><br>
 
-                {% if p.price %}
-                    <div class="price-text">NT$ {{ p.price }}</div>
-                {% else %}
-                    <div class="text-danger">無法取得價格</div>
-                {% endif %}
-            </div>
+        目前價格：
+        NT$ {{ p.price }}
 
-            <button
-                class="btn btn-outline-danger btn-sm"
-                onclick="delItem('{{ p.name }}')">
-                刪除
-            </button>
+        <br>
 
-        </div>
+        目標價格：
+        NT$ {{ p.target }}
+
+        <br><br>
+
+        <button onclick="delItem('{{ p.name }}')">
+            刪除
+        </button>
+
     </div>
-    {% endfor %}
+{% endfor %}
 
     <!-- Chart -->
     <h4 class="mt-4 mb-3">📈 價格走勢圖</h4>
@@ -179,7 +173,8 @@ function add() {
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
             name: document.getElementById("name").value,
-            url: document.getElementById("url").value
+            url: document.getElementById("url").value,
+            target: document.getElementById("target").value
         })
     }).then(() => location.reload())
 }

@@ -17,3 +17,9 @@ def run_scheduler():
                 print(f"✔ {p['name']} = {price}")
 
         time.sleep(300)  # 5分鐘更新一次
+
+檢查價格
+
+if current_price <= target_price:
+
+    send_mail()

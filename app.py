@@ -44,6 +44,7 @@ def index():
         results.append({
             "name": p["name"],
             "price": price
+            "target": p.get("target", "-")
         })
 
     history = get_all()
@@ -64,6 +65,7 @@ def add():
     products.append({
         "name": data["name"],
         "url": data["url"]
+        "target": data["target"]
     })
 
     save_products(products)
