@@ -1,3 +1,4 @@
+from notifier import send_email
 from flask import Flask, render_template, request, jsonify
 from scraper import get_price
 from db import init_db, save, get_all, get_history_by_name
@@ -36,10 +37,27 @@ def index():
     results = []
 
     for p in products:
+        print(p)
         price = get_price(p["url"])
+        target = int(p.get("target", 0))
 
         if price:
             save(p["name"], price)
+        if price and target > 0:
+            if price <= target and not p.get("notified", False):
+
+                send_email(
+                f"{p['name']} 已達標",
+                f"""
+                商品：{p['name']}
+                目前價格：{price}
+                目標價格：{target}
+                """
+        )
+
+        p["notified"] = True
+        save_products(products)
+        print("已寫入 products.json")
 
         results.append({
             "name": p["name"],
@@ -65,7 +83,8 @@ def add():
     products.append({
         "name": data["name"],
         "url": data["url"],
-        "target": data["target"]
+        "target": data.get("target", ""),
+        "notified": False
     })
 
     save_products(products)
@@ -82,8 +101,7 @@ def delete():
     products = load_products()
 
     products = [p for p in products if p["name"] != name]
-
-    save_products(products)
+    
 
     return jsonify({"status": "deleted"})
 

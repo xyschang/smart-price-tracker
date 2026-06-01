@@ -150,11 +150,19 @@
             </span>
         {% endif %}
 
-        
+
         <br><br>
 
-        <button onclick="delItem('{{ p.name }}')">
-            刪除
+        <button
+            class="btn btn-outline-primary btn-sm"
+            onclick="loadChart('{{ p.name }}')">
+                查看圖表
+        </button>
+
+        <button
+            class="btn btn-outline-danger btn-sm"
+            onclick="delItem('{{ p.name }}')">
+                刪除
         </button>
 
     </div>
@@ -189,6 +197,8 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
+let priceChart = null;
+
 function add() {
     fetch("/add", {
         method: "POST",
@@ -216,7 +226,11 @@ async function loadChart(productName) {
     const labels = data.map(d => d.time);
     const prices = data.map(d => d.price);
 
-    new Chart(document.getElementById("priceChart"), {
+    if (priceChart) {
+        priceChart.destroy();
+    }
+
+    priceChart = new Chart(document.getElementById("priceChart"), {
         type: "line",
         data: {
             labels: labels,

@@ -18,6 +18,15 @@ def init_db():
         )
     """)
 
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS products(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            url TEXT,
+            target_price INTEGER
+        )
+    """)
+
     conn.commit()
     conn.close()
 

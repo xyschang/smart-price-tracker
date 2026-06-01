@@ -2,6 +2,13 @@
   {
     "name": "Test Book",
     "url": "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html",
-    "target": "50"
+    "target": "60",
+    "notified": true
+  },
+  {
+    "name": "Test Book 2",
+    "url": "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html",
+    "target": "60",
+    "notified": true
   }
 ]
