@@ -47,17 +47,19 @@ def index():
         price = get_price(p["url"])
         target = int(p.get("target")or 0)
 
-        if price:
-            save(p["name"], price)
-            history_data = get_history_by_name(p["name"])
+        #重複算漲幅
+        #if price:
+            #save(p["name"], price)
+            #history_data = get_history_by_name(p["name"])
 
-            change = None
+            #change = None
 
-            if len(history_data) >= 2:
-                latest = history_data[-1][1]
-                previous = history_data[-2][1]
-                change = latest - previous
-            print(p["name"], change)
+            #if len(history_data) >= 2:
+                #latest = history_data[-1][1]
+                #previous = history_data[-2][1]
+                #change = latest - previous
+            #print(p["name"], change)
+
         if price and target > 0:
             if price <= target and not p.get("notified", False):
 
@@ -121,10 +123,11 @@ def add():
 def delete():
     name = request.json["name"]
     products = load_products()
+    save_products(products)
 
     products = [p for p in products if p["name"] != name]
     
-
+    save_products(products)
     return jsonify({"status": "deleted"})
 
 # =====================
