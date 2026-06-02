@@ -2,50 +2,76 @@ import requests
 from bs4 import BeautifulSoup
 import re
 
-headers = {
+
+HEADERS = {
     "User-Agent": "Mozilla/5.0"
 }
 
+
 def get_price(url):
+    if "books.toscrape.com" in url:
+        return get_books_price(url)
+
+    if "24h.pchome.com.tw" in url:
+        return get_pchome_price(url)
+
+    print("目前不支援這個網站")
+    return None
+
+
+def get_books_price(url):
     try:
-        res = requests.get(url, headers=headers, timeout=10)
+        res = requests.get(url, headers=HEADERS, timeout=10)
         res.raise_for_status()
+
         soup = BeautifulSoup(res.text, "html.parser")
 
-        # 1️⃣ 常見 selector
-        selectors = [
-            ".price",
-            ".price_color",
-            "[class*='price']",
-            "[class*='Price']",
-            "[class*='amount']"
-        ]
+        tag = soup.select_one(".price_color")
 
-        for sel in selectors:
-            tag = soup.select_one(sel)
-            if tag:
-                price = extract(tag.text)
-                if price:
-                    return price
-
-        # 2️⃣ fallback（全頁抓數字）
-        text = soup.get_text()
-        numbers = re.findall(r'\d[\d,]{2,}', text)
-
-        if numbers:
-            nums = [int(n.replace(",", "")) for n in numbers]
-            return max(nums)
+        if tag:
+            return extract_price(tag.text)
 
         return None
 
     except Exception as e:
-        print("scraper error:", e)
+        print("books scraper error:", e)
         return None
 
 
-def extract(text):
+def get_pchome_price(url):
+    try:
+        res = requests.get(url, headers=HEADERS, timeout=10)
+        res.raise_for_status()
+
+        soup = BeautifulSoup(res.text, "html.parser")
+
+        text = soup.get_text()
+
+        numbers = re.findall(r'\d[\d,]{2,}', text)
+
+        if numbers:
+            prices = []
+
+            for n in numbers:
+                price = int(n.replace(",", ""))
+
+                if 10 <= price <= 300000:
+                    prices.append(price)
+
+            if prices:
+                return min(prices)
+
+        return None
+
+    except Exception as e:
+        print("pchome scraper error:", e)
+        return None
+
+
+def extract_price(text):
     match = re.search(r'\d[\d,]*', text)
+
     if match:
         return int(match.group().replace(",", ""))
-    return None
 
+    return None

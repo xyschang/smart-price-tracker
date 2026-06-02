@@ -122,72 +122,84 @@
         </div>
     </div>
 
-    <!-- Products -->
-    <h4 class="mb-3">💰 即時價格</h4>
-
+<!-- Products -->
 <h4 class="mb-3">💰 即時價格</h4>
 
 <div class="card shadow-sm mb-4">
     <div class="card-body">
-
-        <table class="table table-hover align-middle">
+        <input
+            type="text"
+            id="searchInput"
+            class="form-control mb-3"
+            placeholder="搜尋商品..."
+            onkeyup="searchProducts()">
+        <table id="productTable" class="table table-hover align-middle">
             <thead>
                 <tr>
-                    <th>商品名稱</th>
-                    <th>目前價格</th>
-                    <th>目標價格</th>
-                    <th>狀態</th>
-                    <th>操作</th>
+                     <th onclick="sortTable(0)" style="cursor:pointer">商品名稱 ↕</th>
+                     <th onclick="sortTable(1)" style="cursor:pointer">目前價格 ↕</th>
+                     <th onclick="sortTable(2)" style="cursor:pointer">目標價格 ↕</th>
+                     <th onclick="sortTable(3)" style="cursor:pointer">漲跌 ↕</th>
+                     <th>狀態</th>
+                     <th>操作</th>
                 </tr>
             </thead>
+<tbody>
+    {% for p in products %}
+    <tr>
+        <td>{{ p.name }}</td>
 
-            <tbody>
-                {% for p in products %}
-                <tr>
-                    <td>{{ p.name }}</td>
+        <td>
+            {% if p.price %}
+                NT$ {{ p.price }}
+            {% else %}
+                無法取得
+            {% endif %}
+        </td>
 
-                    <td>
-                        {% if p.price %}
-                            NT$ {{ p.price }}
-                        {% else %}
-                            無法取得
-                        {% endif %}
-                    </td>
+        <td>
+            {% if p.target %}
+                NT$ {{ p.target }}
+            {% else %}
+                未設定
+            {% endif %}
+        </td>
+        <td>
+            {% if p.change is not none %}
+                {% if p.change > 0 %}
+                    <span class="text-danger">▲ {{ p.change }}</span>
+                {% elif p.change < 0 %}
+                    <span class="text-success">▼ {{ p.change | abs }}</span>
+                {% else %}
+                    —
+                {% endif %}
+            {% else %}
+                —
+            {% endif %}
+        </td>
 
-                    <td>
-                        {% if p.target %}
-                            NT$ {{ p.target }}
-                        {% else %}
-                            未設定
-                        {% endif %}
-                    </td>
+        <td>
+            {% if p.price is not none and p.target and p.price <= p.target|int %}
+                <span class="badge bg-success">✅ 已達標</span>
+            {% elif p.price is none %}
+                <span class="badge bg-secondary">無法取得價格</span>
+            {% else %}
+                <span class="badge bg-danger">❌ 未達標</span>
+            {% endif %}
+        </td>
 
-                    <td>
-                        {% if p.price is not none and p.target and p.price <= p.target|int %}
-                            <span class="badge bg-success">✅ 已達標</span>
-                        {% elif p.price is none %}
-                            <span class="badge bg-secondary">無法取得價格</span>
-                        {% else %}
-                            <span class="badge bg-danger">❌ 未達標</span>
-                        {% endif %}
-                    </td>
+        <td>
+            <button class="btn btn-outline-primary btn-sm" onclick="loadChart('{{ p.name }}')">
+                查看圖表
+            </button>
 
-                    <td>
-                        <button
-                            class="btn btn-outline-primary btn-sm"
-                            onclick="loadChart('{{ p.name }}')">
-                            查看圖表
-                        </button>
-
-                        <button
-                            class="btn btn-outline-danger btn-sm"
-                            onclick="delItem('{{ p.name }}')">
-                            刪除
-                        </button>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
+            <button class="btn btn-outline-danger btn-sm" onclick="delItem('{{ p.name }}')">
+                刪除
+            </button>
+        </td>
+    </tr>
+     {% endfor %}
+</tbody>
         </table>
 
     </div>
@@ -268,7 +280,59 @@ async function loadChart(productName) {
         }
     });
 }
+function searchProducts() {
+    const input = document.getElementById("searchInput").value.toLowerCase();
+    const rows = document.querySelectorAll("#productTable tbody tr");
 
+    rows.forEach(row => {
+        const productName = row.cells[0].innerText.toLowerCase();
+
+        if (productName.includes(input)) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    });
+}
+let sortDirection = true;
+"表格排序"
+function sortTable(columnIndex) {
+
+    const table = document.getElementById("productTable");
+    const tbody = table.querySelector("tbody");
+
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+
+    rows.sort((a, b) => {
+
+        let aText = a.cells[columnIndex].innerText
+            .replace("NT$", "")
+            .replace(",", "")
+            .trim();
+
+        let bText = b.cells[columnIndex].innerText
+            .replace("NT$", "")
+            .replace(",", "")
+            .trim();
+
+        const aNum = Number(aText);
+        const bNum = Number(bText);
+
+        if (!isNaN(aNum) && !isNaN(bNum)) {
+            return sortDirection
+                ? aNum - bNum
+                : bNum - aNum;
+        }
+
+        return sortDirection
+            ? aText.localeCompare(bText)
+            : bText.localeCompare(aText);
+    });
+
+    sortDirection = !sortDirection;
+
+    rows.forEach(row => tbody.appendChild(row));
+}
 {% if products %}
 loadChart("{{ products[0].name }}");
 {% endif %}

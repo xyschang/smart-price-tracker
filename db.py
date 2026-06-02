@@ -76,3 +76,23 @@ def get_history_by_name(name):
     conn.close()
 
     return data
+
+def get_previous_price(name):
+    conn = sqlite3.connect(DB_PATH)
+
+    cursor = conn.execute("""
+        SELECT price
+        FROM prices
+        WHERE name = ?
+        ORDER BY id DESC
+        LIMIT 2
+    """, (name,))
+
+    data = cursor.fetchall()
+
+    conn.close()
+
+    if len(data) >= 2:
+        return data[1][0]
+
+    return None

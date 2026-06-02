@@ -1,7 +1,13 @@
 from notifier import send_email
 from flask import Flask, render_template, request, jsonify
 from scraper import get_price
-from db import init_db, save, get_all, get_history_by_name
+from db import (
+    init_db,
+    save,
+    get_all,
+    get_history_by_name,
+    get_previous_price
+)
 import json
 import os
 print("正在執行的 app.py：", __file__)
@@ -59,10 +65,17 @@ def index():
                 save_products(products)
                 print("已寫入 products.json")
 
+        previous_price = get_previous_price(p["name"])
+
+        change = None
+
+        if previous_price and price:
+            change = price - previous_price
         results.append({
             "name": p["name"],
             "price": price,
-            "target": p.get("target", "")
+            "target": p.get("target", ""),
+            "change": change
         })
 
     history = get_all()

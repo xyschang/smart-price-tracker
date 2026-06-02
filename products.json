@@ -10,5 +10,17 @@
     "url": "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html",
     "target": "60",
     "notified": true
+  },
+  {
+    "name": "AirPods 4",
+    "url": "https://24h.pchome.com.tw/prod/DYAJCR-1900IF3VZ",
+    "target": "3800",
+    "notified": true
+  },
+  {
+    "name": "AirPods 4",
+    "url": "https://24h.pchome.com.tw/prod/DYAJCR-1900IF3VZ",
+    "target": "3799",
+    "notified": true
   }
 ]
