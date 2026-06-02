@@ -44,23 +44,12 @@ def get_pchome_price(url):
         res.raise_for_status()
 
         soup = BeautifulSoup(res.text, "html.parser")
-
         text = soup.get_text()
 
-        numbers = re.findall(r'\d[\d,]{2,}', text)
+        m = re.search(r'\$([\d,]+)', text)
 
-        if numbers:
-            prices = []
-
-            for n in numbers:
-                price = int(n.replace(",", ""))
-
-                if 10 <= price <= 300000:
-                    prices.append(price)
-
-            if prices:
-                return min(prices)
-
+        if m:
+            return int(m.group(1).replace(",", ""))
         return None
 
     except Exception as e:

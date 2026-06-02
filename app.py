@@ -49,6 +49,15 @@ def index():
 
         if price:
             save(p["name"], price)
+            history_data = get_history_by_name(p["name"])
+
+            change = None
+
+            if len(history_data) >= 2:
+                latest = history_data[-1][1]
+                previous = history_data[-2][1]
+                change = latest - previous
+            print(p["name"], change)
         if price and target > 0:
             if price <= target and not p.get("notified", False):
 
