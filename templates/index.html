@@ -125,60 +125,73 @@
     <!-- Products -->
     <h4 class="mb-3">💰 即時價格</h4>
 
-    {% for p in products %}
-    <div class="card">
+<h4 class="mb-3">💰 即時價格</h4>
 
-        <b>{{ p.name }}</b><br>
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
 
-        目前價格：
-        {% if p.price %}
-            NT$ {{ p.price }}
-        {% else %}
-            無法取得價格
-        {% endif %}
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>商品名稱</th>
+                    <th>目前價格</th>
+                    <th>目標價格</th>
+                    <th>狀態</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
 
-        <br>
+            <tbody>
+                {% for p in products %}
+                <tr>
+                    <td>{{ p.name }}</td>
 
-        目標價格：
-        {% if p.target %}
-            NT$ {{ p.target }}
-        {% else %}
-            未設定
-        {% endif %}
+                    <td>
+                        {% if p.price %}
+                            NT$ {{ p.price }}
+                        {% else %}
+                            無法取得
+                        {% endif %}
+                    </td>
 
-        <br>
+                    <td>
+                        {% if p.target %}
+                            NT$ {{ p.target }}
+                        {% else %}
+                            未設定
+                        {% endif %}
+                    </td>
 
-        {% if p.price is not none and p.target and p.price <= p.target|int %}
-            <span class="badge bg-success">
-                ✅ 已達標
-            </span>
-        {% elif p.price is none %}
-            <span class="badge bg-secondary">
-                無法取得價格
-            </span>
-        {% else %}
-            <span class="badge bg-danger">
-                ❌ 未達標
-            </span>
-        {% endif %}
+                    <td>
+                        {% if p.price is not none and p.target and p.price <= p.target|int %}
+                            <span class="badge bg-success">✅ 已達標</span>
+                        {% elif p.price is none %}
+                            <span class="badge bg-secondary">無法取得價格</span>
+                        {% else %}
+                            <span class="badge bg-danger">❌ 未達標</span>
+                        {% endif %}
+                    </td>
 
+                    <td>
+                        <button
+                            class="btn btn-outline-primary btn-sm"
+                            onclick="loadChart('{{ p.name }}')">
+                            查看圖表
+                        </button>
 
-        <br><br>
-        <div class="mt-2">
-            <button
-                class="btn btn-outline-primary btn-sm"
-                onclick="loadChart('{{ p.name }}')">
-                    查看圖表
-            </button>
+                        <button
+                            class="btn btn-outline-danger btn-sm"
+                            onclick="delItem('{{ p.name }}')">
+                            刪除
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-            <button
-                class="btn btn-outline-danger btn-sm"
-                onclick="delItem('{{ p.name }}')">
-                    刪除
-            </button>
-
-        </div>
-{% endfor %}
+    </div>
+</div>
 
     <!-- Chart -->
     <h4 class="mt-4 mb-3">📈 價格走勢圖</h4>
