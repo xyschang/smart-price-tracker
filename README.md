@@ -13,8 +13,10 @@ https://smart-price-tracker-cbke.onrender.com
 
 https://github.com/xyschang/smart-price-tracker
 
- **功能特色**
+**功能特色**
+
 **商品管理**
+
 新增商品
 刪除商品
 多商品追蹤
@@ -22,28 +24,34 @@ https://github.com/xyschang/smart-price-tracker
 商品排序
 設定目標價格
 **價格監控**
+
 自動擷取商品價格
 即時顯示價格資訊
 達標價格判斷
 價格變動分析
 價格漲跌顯示
 **歷史紀錄**
+
 SQLite 儲存價格資料
 歷史價格查詢
 Chart.js 價格走勢圖
 多商品圖表切換
 **通知功能**
+
 Gmail SMTP Email 通知
 達標價格自動寄送通知
 防重複通知機制
 **自動化**
+
 Windows 工作排程器
 每日自動執行價格檢查
 雲端部署
 Render 雲端部署
 GitHub 自動同步更新
 **使用技術**
+
 **後端**
+
 Python
 Flask
 資料庫
@@ -55,43 +63,53 @@ Bootstrap
 JavaScript
 Chart.js
 **資料擷取**
+
 Requests
 BeautifulSoup
 **通知系統**
+
 Gmail SMTP
 Python Dotenv
 **版本控制**
+
 Git
 GitHub
 雲端平台
 Render
 **已實作功能**
+
 **基礎系統**
+
 Flask Web Application
 SQLite Database
 REST API
 Bootstrap Dashboard
 **商品價格追蹤**
+
 BooksToScrape 商品追蹤
 PChome 商品追蹤
 多商品管理
 價格歷史紀錄
 **視覺化分析**
+
 Chart.js 折線圖
 多商品圖表切換
 價格漲跌分析
 商品搜尋與排序
 **通知與自動化**
+
 Gmail 自動通知
 達標價格提醒
 防重複寄送機制
 Windows Task Scheduler
 **部署與維護**
+
 GitHub 版本控制
 Render 雲端部署
 環境變數管理
 Debug Log 管理
 **專案架構**
+
 smart-price-tracker
 │
 ├── app.py
@@ -111,6 +129,7 @@ smart-price-tracker
 └── data
     └── prices.db
 **開發過程中解決的問題**
+
 Flask Route 與 API 錯誤排查
 SQLite 歷史資料查詢設計
 Chart.js 圖表資料串接
