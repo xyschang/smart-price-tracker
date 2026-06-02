@@ -111,6 +111,7 @@ Debug Log 管理
 **專案架構**
 
 smart-price-tracker
+
 │
 
 ├── app.py
