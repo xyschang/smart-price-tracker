@@ -21,7 +21,7 @@ def check_prices():
 
     for p in products:
         price = get_price(p["url"])
-        target = int(p.get("target", 0))
+        target = int(p.get("target")or 0)
 
         print(f"檢查商品：{p['name']}")
         print(f"目前價格：{price}")
